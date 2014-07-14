@@ -1,0 +1,55 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>File Upload</title>
+</head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+	  function FileUpload( file) {
+		  var reader = new FileReader();  
+		  
+		  var xhr = new XMLHttpRequest();
+		  this.xhr = xhr;
+		  var self = this;
+		  this.xhr.upload.addEventListener("progress", function(e) {
+		        if (e.lengthComputable) {
+		          var percentage = Math.round((e.loaded * 100) / e.total);
+		          console.log(percentage);
+		        }
+		      }, false);
+		  
+		  xhr.upload.addEventListener("load", function(e){
+		         console.log("load")
+		      }, false);
+		  xhr.open("POST", "http://localhost:8080/wildfly-servlet-async/upload");
+		  xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
+		  xhr.setRequestHeader("Content-Type",  'multipart/related; boundary="END_OF_PART"');
+		    
+		  reader.onload = function(evt) {
+			  debugger
+		    xhr.send(evt.target.result);
+		  };
+		  reader.readAsBinaryString(file);
+		}
+		
+$( document ).ready(function() {
+	  alert("ready");
+	  debugger
+	});
+
+
+</script>
+<body>
+    <center>
+        <h1>Multiple Files Upload</h1>
+        <form method="post" action="upload" enctype="multipart/form-data">
+        	First name: <input type="text" name="firstname"><br>
+			Last name: <input type="text" name="lastname"><br>
+			Select Files: <input id="files" type="file" name="img" multiple>
+            <br /> <input type="submit" value="Upload" />
+        </form>
+    </center>
+</body>
+</html>
